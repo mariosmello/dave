@@ -11,5 +11,6 @@
 |
 */
 
+Route::controller('/auth', 'Auth\AuthController');
 Route::get('/', 'DashboardController@index');
-Route::get('/categorias', 'CategoriaController@index');
+Route::get('/categorias', ['middleware' => 'auth', 'uses' => 'CategoriaController@index']);

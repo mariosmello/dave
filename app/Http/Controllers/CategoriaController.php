@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Categoria;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -11,6 +12,8 @@ class CategoriaController extends Controller
 {
     public function index()
     {
-        return view('categoria.index');
+        $categorias = Categoria::paginate(5);
+
+        return view('categoria.index')->with(['categorias' => $categorias]);
     }
 }
