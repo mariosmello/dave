@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Categoria;
-use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 class CategoriaController extends Controller
 {
@@ -16,4 +15,35 @@ class CategoriaController extends Controller
 
         return view('categoria.index')->with(['categorias' => $categorias]);
     }
+
+    public function store(Requests\CategoriaRequest $request)
+    {
+        $categoria = new Categoria();
+        $categoria->nome = $request->get('nome');
+        $categoria->slug = Str::slug($request->get('nome'));
+
+        $result = $categoria->save();
+
+        if (!$result) {
+            return redirect()->back()->withInput()->withErrors('Falha ao salvar categoria');
+        }
+
+        return redirect()->back()->with('sucesso','Categoria salva com sucesso');
+    }
+
+    public function edit($id)
+    {
+
+    }
+
+    public function update($id)
+    {
+
+    }
+
+    public function destroy($id)
+    {
+
+    }
+
 }

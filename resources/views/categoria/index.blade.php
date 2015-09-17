@@ -4,6 +4,8 @@
 
     <h1 class="page-header"><i class="fa fa-fw fa-list"></i>Categorias</h1>
 
+    @include('partials.alertas')
+
     <div class="row">
         <div class="col-md-7">
 
@@ -23,8 +25,8 @@
                         <td>{!! $categoria->nome !!}</td>
                         <td>{!! $categoria->created_at !!}</td>
                         <td>
-                            <button class="btn btn-primary btn-xs">Editar</button>
-                            <button class="btn btn-danger btn-xs">Excluir</button>
+                            <a href="{!! route('categoria.edit', $categoria->id) !!}" class="btn btn-primary btn-xs">Editar</a>
+                            <a href="{!! route('categoria.destroy', $categoria->id) !!}" class="btn btn-danger btn-xs">Excluir</a>
                         </td>
                     </tr>
                 @endforeach
@@ -44,13 +46,18 @@
         <div class="col-md-5">
 
             <div class="well">
-                {!! Form::open(array('url' => 'foo/bar')) !!}
+                {!! Form::open(array('route' => 'categoria.store')) !!}
                 <div class="form-group">
                     {!! Form::label('nome', 'Nome', array('class' => 'form-label')) !!}
                     {!! Form::text('nome', null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="row">
-
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-fw fa-save"></i>
+                            Salvar
+                        </button>
+                    </div>
                 </div>
                 {!! Form::close() !!}
             </div>
