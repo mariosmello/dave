@@ -11,9 +11,17 @@ class CategoriaController extends Controller
 {
     public function index()
     {
-        $categorias = Categoria::paginate(5);
 
-        return view('categoria.index')->with(['categorias' => $categorias]);
+        $busca = \Request::get('busca');
+
+        if (!is_null($busca) && !empty($busca))
+        {
+            $categorias = Categoria::where('nome', 'like', '%' . $busca . '%')->paginate(5);
+        } else {
+            $categorias = Categoria::paginate(5);
+        }
+
+        return view('categoria.index')->with(['categorias' => $categorias, 'busca' => $busca]);
     }
 
     public function store(Requests\CategoriaRequest $request)
@@ -34,9 +42,17 @@ class CategoriaController extends Controller
     public function edit($id)
     {
         $cat = Categoria::find($id);
-        $categorias = Categoria::paginate(5);
 
-        return view('categoria.edit')->with(['cat' => $cat, 'categorias' => $categorias]);
+        $busca = \Request::get('busca');
+
+        if (!is_null($busca) && !empty($busca))
+        {
+            $categorias = Categoria::where('nome', 'like', '%' . $busca . '%')->paginate(5);
+        } else {
+            $categorias = Categoria::paginate(5);
+        }
+
+        return view('categoria.edit')->with(['cat' => $cat, 'categorias' => $categorias, 'busca' => $busca]);
 
     }
 
@@ -64,7 +80,7 @@ class CategoriaController extends Controller
             return redirect()->back()->withInput()->withErrors('Falha ao deletar a categoria');
         }
 
-        return redirect()->back()->with('sucesso','Categoria deletada com sucesso');
+        return redirect()->route('categoria.index')->with('sucesso','Categoria deleteda com sucesso');
     }
 
 }

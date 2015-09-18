@@ -9,6 +9,10 @@
     <div class="row">
         <div class="col-md-7">
 
+            @include('partials.busca', ['busca' => $busca])
+
+            @if(count($categorias))
+
             <table class="table table-bordered table-striped table-hover" id="gridCategorias">
                 <thead>
                 <tr>
@@ -41,6 +45,12 @@
                     Página {!! $categorias->currentPage() !!} de {!! $categorias->lastPage() !!} - Total de itens {!! $categorias->total() !!}
                 </div>
             </div>
+
+            @else
+
+            <h5>Sem resultados</h5>
+
+            @endif
 
         </div>
         <div class="col-md-5">
