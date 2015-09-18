@@ -2,35 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Categoria;
+use App\Dave\Repositories\iCategoryRepository;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
 
 class CategoriaController extends Controller
 {
+
+    protected $repository;
+
+    public function __construct(iCategoryRepository $repository)
+    {
+        $this->repository = $repository;
+
+    }
+
     public function index()
     {
-
         $busca = \Request::get('busca');
 
-        if (!is_null($busca) && !empty($busca))
-        {
-            $categorias = Categoria::where('nome', 'like', '%' . $busca . '%')->paginate(5);
-        } else {
-            $categorias = Categoria::paginate(5);
-        }
+        $categorias = $this->repository->index($busca);
 
         return view('categoria.index')->with(['categorias' => $categorias, 'busca' => $busca]);
     }
 
     public function store(Requests\CategoriaRequest $request)
     {
-        $categoria = new Categoria();
-        $categoria->nome = $request->get('nome');
-        $categoria->slug = Str::slug($request->get('nome'));
-
-        $result = $categoria->save();
+        $result = $this->repository->store($request->all());
 
         if (!$result) {
             return redirect()->back()->withInput()->withErrors('Falha ao salvar categoria');
@@ -41,16 +39,10 @@ class CategoriaController extends Controller
 
     public function edit($id)
     {
-        $cat = Categoria::find($id);
-
         $busca = \Request::get('busca');
 
-        if (!is_null($busca) && !empty($busca))
-        {
-            $categorias = Categoria::where('nome', 'like', '%' . $busca . '%')->paginate(5);
-        } else {
-            $categorias = Categoria::paginate(5);
-        }
+        $categorias = $this->repository->index($busca);
+        $cat = $this->repository->show($id);
 
         return view('categoria.edit')->with(['cat' => $cat, 'categorias' => $categorias, 'busca' => $busca]);
 
@@ -58,11 +50,7 @@ class CategoriaController extends Controller
 
     public function update(Requests\CategoriaRequest $request, $id)
     {
-        $categoria = Categoria::find($id);
-        $categoria->nome = $request->get('nome');
-        $categoria->slug = Str::slug($request->get('nome'));
-
-        $result = $categoria->save();
+        $result = $this->repository->update($request->all(),$id);
 
         if (!$result) {
             return redirect()->back()->withInput()->withErrors('Falha ao atualizar categoria');
@@ -73,8 +61,7 @@ class CategoriaController extends Controller
 
     public function destroy($id)
     {
-        $categoria = Categoria::find($id);
-        $result = $categoria->delete();
+        $result = $this->repository->destroy($id);
 
         if (!$result) {
             return redirect()->back()->withInput()->withErrors('Falha ao deletar a categoria');
